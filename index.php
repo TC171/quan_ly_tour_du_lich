@@ -1,22 +1,22 @@
-<?php
-require_once "commons/env.php";
-require_once "commons/function.php";
+<?php 
+session_start();
+// Require file Common
+require_once './commons/env.php'; // Khai báo biến môi trường
+require_once './commons/function.php'; // Hàm hỗ trợ
 
-// Lấy controller & action từ URL
-$controller = $_GET['controller'] ?? 'home';
-$action = $_GET['action'] ?? 'index';
+// Require toàn bộ file Controllers
+require_once './controllers/HomeController.php';
 
-// Xử lý route
-$file = "controllers/" . ucfirst($controller) . "Controller.php";
-if (file_exists($file)) {
-    require_once $file;
-    $className = ucfirst($controller) . "Controller";
-    $instance = new $className();
-    if (method_exists($instance, $action)) {
-        $instance->$action();
-    } else {
-        echo "❌ Action không tồn tại.";
-    }
-} else {
-    echo "❌ Controller không tồn tại.";
-}
+// Require toàn bộ file Models
+
+
+
+// Route
+$act = $_GET['act'] ?? '/';
+
+
+
+match ($act) {
+    '/' => (new HomeController())->home(),
+    
+};
