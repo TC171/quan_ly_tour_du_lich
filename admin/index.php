@@ -9,12 +9,16 @@ require_once '../commons/function.php'; // Hàm hỗ trợ
 require_once './controllers/AdminBaoCaoThongKeController.php';
 require_once './controllers/AdminTaiKhoanController.php';
 require_once './controllers/AdminTourController.php';
+require_once './controllers/AdminDatTourController.php';
+require_once './controllers/AdminKhachDatTourController.php';
 
 
 
 // Require toàn bộ file Models
 require_once './models/AdminTaiKhoan.php';
 require_once './models/AdminTour.php';
+require_once './models/AdminDatTour.php';
+require_once './models/AdminKhachDatTour.php';
 
 //router
 $act = $_GET['act'] ?? '/';
@@ -29,6 +33,16 @@ match ($act) {
     // route báo cáo thống kê - trang chủ
     '/' => (new AdminBaoCaoThongKeController())->home(),
     'list-tour' => (new AdminTourController())->danhSachTour(),
+
+
+
+    // route đặt tour
+    'dat-tour' => (new AdminDatTourController())->list(),
+
+    //router khách đặt tour
+    'khach-dat-tour' => (new AdminKhachDatTourController())->list(),
+
+
     
     
 

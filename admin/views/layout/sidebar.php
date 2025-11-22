@@ -44,16 +44,16 @@
           </li>
 
           <li class="nav-item">
-            <a href="<?= BASE_URL_ADMIN ?>/dat-tour" class="nav-link">
+            <a href="<?= BASE_URL_ADMIN. '?act=dat-tour' ?>" class="nav-link">
               <i class="nav-icon fas fa-shopping-cart"></i>
               <p>Đặt Tour</p>
             </a>
           </li>
 
           <li class="nav-item">
-            <a href="<?= BASE_URL_ADMIN ?>/khach-dat-tour" class="nav-link">
+            <a href="<?= BASE_URL_ADMIN. '?act=khach-dat-tour' ?>" class="nav-link">
               <i class="nav-icon fas fa-users"></i>
-              <p>Khách trong Đặt Tour</p>
+              <p>Khách Đặt Tour</p>
             </a>
           </li>
 
