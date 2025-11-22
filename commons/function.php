@@ -65,9 +65,11 @@ function formatDate($date) {
 
 
 //
-function checkLoginAdmin(){
-    if (!isset($_SESSION['user_admin'])) {
-        header("Location: " . BASE_URL_ADMIN . '?act=login-admin' );
+function checkLogin()
+    {
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    if (!isset($_SESSION['admin'])) {
+        header("Location: " . BASE_URL_ADMIN . "?act=login-admin"); // Nếu chưa đăng nhập, chuyển hướng đến trang login
         exit();
     }
 }
@@ -75,3 +77,21 @@ function checkLoginAdmin(){
 function formatPrice($price){
     return number_format($price ,0,',','.');
 }
+
+function checkRole($allowedRoles = [])
+    {
+        if (!isset($_SESSION['admin'])) {
+            header("Location: ?act=login-admin");
+            exit();
+        }
+
+        // Lấy vai trò từ session
+        $role = $_SESSION['admin']['vai_tro'];
+
+        // Kiểm tra quyền không đủ
+        if (!in_array($role, $allowedRoles)) {
+            $_SESSION['error'] = "Bạn không có quyền truy cập trang này!";
+            header("Location: ?act=403");
+            exit();
+        }
+    }

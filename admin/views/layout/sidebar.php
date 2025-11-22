@@ -1,9 +1,8 @@
 <?php 
-  $role = $_SESSION['user']['vai_tro'] ?? 'ADMIN'; 
+  $role = $_SESSION['user']['vai_tro'] ?? 'ADMIN'; // Mặc định là Admin nếu không có vai trò
 ?>
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-
   <!-- Logo -->
   <a href="<?= BASE_URL_ADMIN ?>" class="brand-link">
     <img src="./assets/dist/img/AdminLTELogo.png" class="brand-image img-circle elevation-3" style="opacity:.8">
@@ -12,7 +11,6 @@
 
   <!-- Sidebar -->
   <div class="sidebar">
-
     <!-- User -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
@@ -26,7 +24,6 @@
     <!-- Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview">
-
         <!-- TRANG CHỦ – tất cả đều xem được -->
         <li class="nav-item">
           <a href="<?= BASE_URL_ADMIN ?>" class="nav-link">
@@ -37,11 +34,10 @@
 
         <!-- ===================== ADMIN ONLY ===================== -->
         <?php if($role === 'ADMIN'): ?>
-
           <li class="nav-header">QUẢN LÝ TOUR</li>
 
           <li class="nav-item">
-            <a href="<?= BASE_URL_ADMIN ?>/tour" class="nav-link">
+            <a href="<?= BASE_URL_ADMIN. '?act=list-tour'?>" class="nav-link">
               <i class="nav-icon fas fa-map-marked-alt"></i>
               <p>Danh sách Tour</p>
             </a>
@@ -115,7 +111,6 @@
 
         <?php endif; ?>
         <!-- =================== END ADMIN ONLY ===================== -->
-
 
         <!-- ===================== HDV ONLY ========================= -->
         <?php if($role === 'HDV'): ?>

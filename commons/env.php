@@ -1,6 +1,7 @@
 <?php
-define('BASE_URL', 'http://localhost/quan_ly_tour_du_lich/');
+define('BASE_URL_HDV', 'http://localhost/quan_ly_tour_du_lich/');
 define('BASE_URL_ADMIN', 'http://localhost/quan_ly_tour_du_lich/admin/');
+
 
 define('DB_HOST', 'localhost');
 define('DB_PORT', 3306);
