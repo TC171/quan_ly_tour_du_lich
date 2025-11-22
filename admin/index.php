@@ -8,11 +8,13 @@ require_once '../commons/function.php'; // Hàm hỗ trợ
 
 require_once './controllers/AdminBaoCaoThongKeController.php';
 require_once './controllers/AdminTaiKhoanController.php';
+require_once './controllers/AdminTourController.php';
 
 
 
 // Require toàn bộ file Models
 require_once './models/AdminTaiKhoan.php';
+require_once './models/AdminTour.php';
 
 //router
 $act = $_GET['act'] ?? '/';
@@ -26,6 +28,7 @@ if ($act !== 'login-admin' && $act !== 'check-login-admin' && $act !== 'logout-a
 match ($act) {
     // route báo cáo thống kê - trang chủ
     '/' => (new AdminBaoCaoThongKeController())->home(),
+    'list-tour' => (new AdminTourController())->danhSachTour(),
     
     
 
