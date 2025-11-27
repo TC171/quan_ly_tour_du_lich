@@ -6,7 +6,7 @@ class LichTrinhTour {
     private $conn;
 
     public function __construct() {
-        $this->conn = connectDB(); // dùng hàm connectDB() thay cho class Database
+        $this->conn = connectDB(); // kết nối MySQLi
     }
 
     // Lấy tất cả lịch trình
@@ -17,45 +17,71 @@ class LichTrinhTour {
                 JOIN huong_dan_vien h ON lt.hdv_id = h.hdv_id
                 ORDER BY lt.ngay_khoi_hanh DESC";
         $result = $this->conn->query($sql);
+        if (!$result) return false;
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
     // Lấy lịch trình theo ID
     public function getById($id) {
         $stmt = $this->conn->prepare("SELECT * FROM lich_trinh_tour WHERE lich_trinh_id=?");
+        if (!$stmt) return false;
         $stmt->bind_param("i", $id);
         $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
+        return $stmt->get_result()->fetch_assoc() ?? [];
     }
 
     // Thêm lịch trình
     public function create($data) {
-        $stmt = $this->conn->prepare("INSERT INTO lich_trinh_tour (tour_id, hdv_id, ngay_khoi_hanh, ngay_ket_thuc, phuong_tien, khach_san, trang_thai) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $this->conn->prepare("INSERT INTO lich_trinh_tour 
+            (tour_id, hdv_id, ngay_khoi_hanh, ngay_ket_thuc, phuong_tien, khach_san, trang_thai) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)");
+        if (!$stmt) return false;
+
+        $tour_id = $data['tour_id'] ?? 0;
+        $hdv_id = $data['hdv_id'] ?? 0;
+        $ngay_khoi_hanh = $data['ngay_khoi_hanh'] ?? null;
+        $ngay_ket_thuc = $data['ngay_ket_thuc'] ?? null;
+        $phuong_tien = $data['phuong_tien'] ?? '';
+        $khach_san = $data['khach_san'] ?? '';
+        $trang_thai = $data['trang_thai'] ?? '';
+
         $stmt->bind_param(
             "iisssss",
-            $data['tour_id'],
-            $data['hdv_id'],
-            $data['ngay_khoi_hanh'],
-            $data['ngay_ket_thuc'],
-            $data['phuong_tien'],
-            $data['khach_san'],
-            $data['trang_thai']
+            $tour_id,
+            $hdv_id,
+            $ngay_khoi_hanh,
+            $ngay_ket_thuc,
+            $phuong_tien,
+            $khach_san,
+            $trang_thai
         );
         return $stmt->execute();
     }
 
     // Cập nhật lịch trình
     public function update($id, $data) {
-        $stmt = $this->conn->prepare("UPDATE lich_trinh_tour SET tour_id=?, hdv_id=?, ngay_khoi_hanh=?, ngay_ket_thuc=?, phuong_tien=?, khach_san=?, trang_thai=? WHERE lich_trinh_id=?");
+        $stmt = $this->conn->prepare("UPDATE lich_trinh_tour SET 
+            tour_id=?, hdv_id=?, ngay_khoi_hanh=?, ngay_ket_thuc=?, phuong_tien=?, khach_san=?, trang_thai=? 
+            WHERE lich_trinh_id=?");
+        if (!$stmt) return false;
+
+        $tour_id = $data['tour_id'] ?? 0;
+        $hdv_id = $data['hdv_id'] ?? 0;
+        $ngay_khoi_hanh = $data['ngay_khoi_hanh'] ?? null;
+        $ngay_ket_thuc = $data['ngay_ket_thuc'] ?? null;
+        $phuong_tien = $data['phuong_tien'] ?? '';
+        $khach_san = $data['khach_san'] ?? '';
+        $trang_thai = $data['trang_thai'] ?? '';
+
         $stmt->bind_param(
             "iisssssi",
-            $data['tour_id'],
-            $data['hdv_id'],
-            $data['ngay_khoi_hanh'],
-            $data['ngay_ket_thuc'],
-            $data['phuong_tien'],
-            $data['khach_san'],
-            $data['trang_thai'],
+            $tour_id,
+            $hdv_id,
+            $ngay_khoi_hanh,
+            $ngay_ket_thuc,
+            $phuong_tien,
+            $khach_san,
+            $trang_thai,
             $id
         );
         return $stmt->execute();
@@ -64,6 +90,7 @@ class LichTrinhTour {
     // Xóa lịch trình
     public function delete($id) {
         $stmt = $this->conn->prepare("DELETE FROM lich_trinh_tour WHERE lich_trinh_id=?");
+        if (!$stmt) return false;
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }

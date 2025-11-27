@@ -32,7 +32,7 @@ if ($act !== 'login-admin' && $act !== 'check-login-admin' && $act !== 'logout-a
 match ($act) {
     // route báo cáo thống kê - trang chủ
     '/' => (new AdminBaoCaoThongKeController())->home(),
-    'list-tour' => (new AdminTourController())->danhSachTour(),
+    'tour' => (new AdminTourController())->danhSachTour(),
 
 
 

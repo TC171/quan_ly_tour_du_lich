@@ -18,9 +18,12 @@
         <tr>
           <th>ID</th>
           <th>Tên Tour</th>
+          <th>Hình Ảnh</th>
           <th>Ngày Đặt</th>
           <th>Trạng Thái</th>
           <th>Tổng Tiền</th>
+          <th>Hành Trình</th>
+          <th>Chính Sách</th>
           <th>Hành Động</th>
         </tr>
       </thead>
@@ -28,10 +31,28 @@
         <?php foreach ($datTours as $dt): ?>
         <tr>
           <td><?= $dt['dat_tour_id'] ?></td>
-          <td><?= $dt['ten_tour'] ?></td>
+          <td><?= htmlspecialchars($dt['ten_tour']) ?></td>
+          
+          <!-- Hiển thị hình ảnh -->
+          <td>
+            <img src="<?= $dt['hinh_anh'] ?>" alt="Hình ảnh tour" style="width: 100px; height: 70px; object-fit: cover;">
+          </td>
+
           <td><?= $dt['ngay_dat'] ?></td>
-          <td><?= $dt['trang_thai'] ?></td>
+          <td><?= $dt['dat_trang_thai'] ?></td>
           <td><?= number_format($dt['tong_tien'],0,',','.') ?> VNĐ</td>
+          
+          <!-- Hiển thị hành trình -->
+          <td>
+            <?= $dt['ngay_bat_dau'] ?> → <?= $dt['ngay_ket_thuc'] ?>
+            (<?= number_format($dt['gia_mua'],0,',','.') ?> VNĐ)
+          </td>
+
+          <!-- Hiển thị chính sách -->
+          <td>
+            <?= htmlspecialchars($dt['chinh_sach']) ?>
+          </td>
+
           <td>
             <a href="?act=edit-dat-tour&id=<?= $dt['dat_tour_id'] ?>" class="btn btn-warning btn-sm">Sửa</a>
             <a href="?act=delete-dat-tour&id=<?= $dt['dat_tour_id'] ?>" class="btn btn-danger btn-sm"

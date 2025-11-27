@@ -14,7 +14,8 @@ class KhachDatTour
         $sql = "SELECT k.*, dt.ngay_dat, t.ten_tour
                 FROM khach_trong_dat_tour k
                 JOIN dat_tour dt ON k.dat_tour_id = dt.dat_tour_id
-                JOIN tour t ON dt.tour_id = t.tour_id
+                JOIN hanh_trinh ht ON dt.hanh_trinh_id = ht.hanh_trinh_id
+                JOIN tour t ON ht.tour_id = t.tour_id
                 ORDER BY k.khach_id DESC";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
@@ -41,7 +42,7 @@ class KhachDatTour
             $data['ho_ten'],
             $data['so_dien_thoai'],
             $data['email'],
-            $data['ghi_chu']
+            $data['ghi_chu'] ?? null
         ]);
     }
 
@@ -57,7 +58,7 @@ class KhachDatTour
             $data['ho_ten'],
             $data['so_dien_thoai'],
             $data['email'],
-            $data['ghi_chu'],
+            $data['ghi_chu'] ?? null,
             $id
         ]);
     }
