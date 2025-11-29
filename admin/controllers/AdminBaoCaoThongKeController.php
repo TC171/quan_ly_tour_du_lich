@@ -1,5 +1,4 @@
 <?php
-// Nhớ require model ở đầu file hoặc trong index.php đã có rồi
 require_once './models/AdminBaoCaoThongKe.php';
 
 class AdminBaoCaoThongKeController {
@@ -10,16 +9,17 @@ class AdminBaoCaoThongKeController {
     }
 
     public function home() {
-        // Lấy các thông số thống kê
+        // 1. Số liệu tổng hợp (4 ô vuông)
         $tongTour = $this->modelThongKe->countTour();
         $tongDonHang = $this->modelThongKe->countDonDat();
         $tongKhachHang = $this->modelThongKe->countKhachHang();
         $tongDoanhThu = $this->modelThongKe->countDoanhThu();
 
-        // Lấy dữ liệu cho biểu đồ (nếu cần)
-        // $listDoanhThu = $this->modelThongKe->getDoanhThuLast7Days();
+        // 2. Dữ liệu Biểu đồ
+        $chartDoanhThu = $this->modelThongKe->getDoanhThu7Ngay();
+        $chartLoaiTour = $this->modelThongKe->getTyLeLoaiTour();
 
-        // Gọi view
+        // Gọi View
         require_once './views/home.php';
     }
 }
