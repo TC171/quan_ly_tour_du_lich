@@ -38,8 +38,9 @@ match ($act) {
     // route đặt tour
     'dat-tour' => (new AdminDatTourController())->list(),
 
-    // router khách đặt tour
+    // --- QUẢN LÝ KHÁCH ĐẶT TOUR ---
     'khach-dat-tour' => (new AdminKhachDatTourController())->list(),
+    'xoa-khach'      => (new AdminKhachDatTourController())->delete(), // <--- THÊM DÒNG NÀY
     
     // --- QUẢN LÝ CHI PHÍ TOUR ---
     'chi_phi_tour'      => (new AdminChiPhiTourController())->danhSachChiPhi(), // Xem danh sách

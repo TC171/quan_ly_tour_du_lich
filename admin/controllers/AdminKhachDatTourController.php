@@ -1,73 +1,40 @@
 <?php
-class AdminKhachDatTourController
-{
-    private $khach;
+class AdminKhachDatTourController {
+    public $modelKhachDatTour;
 
-    public function __construct()
-    {
-        $this->khach = new KhachDatTour();
+    public function __construct() {
+        // Khởi tạo Model
+        $this->modelKhachDatTour = new AdminKhachDatTour();
     }
 
-    // Danh sách khách
-    public function list()
-    {
-        $khachs = $this->khach->getAll();
-        require_once './views/khach-dat-tour/list.php';
+    /**
+     * Hàm hiển thị danh sách khách
+     */
+    public function list() {
+        // 1. Lấy dữ liệu từ Model
+        $listKhach = $this->modelKhachDatTour->getAllKhachDatTour();
+
+        // 2. Gọi file View để hiển thị
+        // Lưu ý: Đường dẫn này tính từ file index.php gốc
+        require_once './views/khach_dat_tour/list.php';
     }
 
-    // Form thêm khách
-    public function create()
-    {
-        require_once './views/khach-dat-tour/create.php';
-    }
+    /**
+     * Hàm xử lý xóa khách
+     */
+    public function delete() {
+        // 1. Lấy id từ URL (ví dụ: ?act=xoa-khach&id_khach=5)
+        // Sử dụng ?? null để tránh lỗi nếu không có tham số
+        $id = $_GET['id_khach'] ?? null;
 
-    // Lưu khách mới
-    public function store()
-    {
-        $data = [
-            'dat_tour_id' => $_POST['dat_tour_id'],
-            'ho_ten' => $_POST['ho_ten'],
-            'so_dien_thoai' => $_POST['so_dien_thoai'],
-            'email' => $_POST['email'],
-            'ghi_chu' => $_POST['ghi_chu']
-        ];
+        // 2. Kiểm tra nếu có ID hợp lệ thì gọi Model xóa
+        if ($id) {
+            $this->modelKhachDatTour->deleteKhach($id);
+        }
 
-        $this->khach->create($data);
-        header("Location: ?act=list-khach-dat-tour");
-        exit();
-    }
-
-    // Form sửa khách
-    public function edit()
-    {
-        $id = $_GET['id'];
-        $khach = $this->khach->getById($id);
-        require_once './views/khach-dat-tour/edit.php';
-    }
-
-    // Cập nhật khách
-    public function update()
-    {
-        $id = $_POST['khach_id'];
-        $data = [
-            'dat_tour_id' => $_POST['dat_tour_id'],
-            'ho_ten' => $_POST['ho_ten'],
-            'so_dien_thoai' => $_POST['so_dien_thoai'],
-            'email' => $_POST['email'],
-            'ghi_chu' => $_POST['ghi_chu']
-        ];
-
-        $this->khach->update($id, $data);
-        header("Location: ?act=list-khach-dat-tour");
-        exit();
-    }
-
-    // Xóa khách
-    public function delete()
-    {
-        $id = $_GET['id'];
-        $this->khach->delete($id);
-        header("Location: ?act=list-khach-dat-tour");
+        // 3. Xóa xong (hoặc không có ID) thì quay về trang danh sách
+        header("Location: " . BASE_URL_ADMIN . '?act=khach-dat-tour');
         exit();
     }
 }
+?>

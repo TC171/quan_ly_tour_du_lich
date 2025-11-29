@@ -1,73 +1,39 @@
 <?php
-class KhachDatTour
-{
-    private $conn;
+class AdminKhachDatTour {
+    public $conn;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->conn = connectDB();
     }
 
-    // Lấy tất cả khách theo đặt tour
-    public function getAll()
-    {
-        $sql = "SELECT k.*, dt.ngay_dat, t.ten_tour
-                FROM khach_trong_dat_tour k
-                JOIN dat_tour dt ON k.dat_tour_id = dt.dat_tour_id
-                JOIN hanh_trinh ht ON dt.hanh_trinh_id = ht.hanh_trinh_id
-                JOIN tour t ON ht.tour_id = t.tour_id
-                ORDER BY k.khach_id DESC";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getAllKhachDatTour() {
+        try {
+            // Lấy tất cả dữ liệu
+            $sql = "SELECT bk.*, b.ngay_khoi_hanh, t.ten_tour 
+                    FROM booking_khach as bk
+                    INNER JOIN bookings as b ON bk.booking_id = b.booking_id
+                    INNER JOIN tours as t ON b.tour_id = t.tour_id 
+                    ORDER BY bk.khach_id DESC"; // Sắp xếp theo khach_id cho chuẩn
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (Exception $e) {
+            echo "Lỗi SQL (Get All): " . $e->getMessage();
+        }
     }
 
-    // Lấy khách theo ID
-    public function getById($id)
-    {
-        $sql = "SELECT * FROM khach_trong_dat_tour WHERE khach_id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    // Thêm khách
-    public function create($data)
-    {
-        $sql = "INSERT INTO khach_trong_dat_tour (dat_tour_id, ho_ten, so_dien_thoai, email, ghi_chu)
-                VALUES (?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            $data['dat_tour_id'],
-            $data['ho_ten'],
-            $data['so_dien_thoai'],
-            $data['email'],
-            $data['ghi_chu'] ?? null
-        ]);
-    }
-
-    // Cập nhật khách
-    public function update($id, $data)
-    {
-        $sql = "UPDATE khach_trong_dat_tour 
-                SET dat_tour_id = ?, ho_ten = ?, so_dien_thoai = ?, email = ?, ghi_chu = ?
-                WHERE khach_id = ?";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            $data['dat_tour_id'],
-            $data['ho_ten'],
-            $data['so_dien_thoai'],
-            $data['email'],
-            $data['ghi_chu'] ?? null,
-            $id
-        ]);
-    }
-
-    // Xóa khách
-    public function delete($id)
-    {
-        $sql = "DELETE FROM khach_trong_dat_tour WHERE khach_id = ?";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([$id]);
+    public function deleteKhach($id) {
+        try {
+            // SỬA QUAN TRỌNG: Dùng đúng tên cột 'khach_id' trong Database
+            $sql = "DELETE FROM booking_khach WHERE khach_id = :id";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            return true;
+        } catch (Exception $e) {
+            echo "Lỗi SQL (Delete): " . $e->getMessage();
+        }
     }
 }
+?>
