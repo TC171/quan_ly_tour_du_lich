@@ -3,37 +3,58 @@ class AdminDatTourController {
     public $modelDatTour;
 
     public function __construct() {
-        // Khởi tạo Model
         $this->modelDatTour = new AdminDatTour();
     }
 
-    /**
-     * Hàm hiển thị danh sách (Hàm bị thiếu gây ra lỗi)
-     */
+    // 1. Danh sách
     public function list() {
-        // 1. Lấy dữ liệu từ Model
         $listDatTour = $this->modelDatTour->getAllBookings();
-        
-        // 2. Gọi View hiển thị
-        // Sử dụng __DIR__ để đường dẫn chính xác tuyệt đối
         require_once __DIR__ . '/../views/dat_tour/list.php';
     }
 
-    /**
-     * Hàm xóa Booking
-     */
+    // 2. Xóa
     public function delete() {
-        // Lấy ID từ URL
         $id = $_GET['id_booking'] ?? null;
-        
-        // Nếu có ID thì gọi Model xóa
         if ($id) {
             $this->modelDatTour->deleteBooking($id);
         }
-        
-        // Xóa xong quay về danh sách
         header("Location: " . BASE_URL_ADMIN . '?act=dat-tour');
         exit();
+    }
+
+    // 3. Form Sửa
+    public function formEdit() {
+        $id = $_GET['id_booking'] ?? null;
+        if ($id) {
+            $booking = $this->modelDatTour->getDetailBooking($id);
+            if ($booking) {
+                require_once __DIR__ . '/../views/dat_tour/edit.php';
+            } else {
+                // Không tìm thấy dữ liệu -> về trang danh sách
+                header("Location: " . BASE_URL_ADMIN . '?act=dat-tour');
+                exit();
+            }
+        } else {
+            header("Location: " . BASE_URL_ADMIN . '?act=dat-tour');
+            exit();
+        }
+    }
+
+    // 4. Xử lý Cập nhật (Sạch sẽ, không debug)
+    public function postEdit() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $id = $_POST['booking_id'] ?? null;
+            $trang_thai = $_POST['trang_thai'] ?? null;
+
+            // Chỉ gọi model khi có đủ ID và Trạng thái
+            if ($id && $trang_thai !== null) {
+                $this->modelDatTour->updateBooking($id, $trang_thai);
+            }
+            
+            // Xong việc thì quay về danh sách
+            header("Location: " . BASE_URL_ADMIN . '?act=dat-tour');
+            exit();
+        }
     }
 }
 ?>

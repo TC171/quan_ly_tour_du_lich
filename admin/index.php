@@ -8,50 +8,79 @@ require_once '../commons/function.php'; // Hàm hỗ trợ
 require_once './controllers/AdminBaoCaoThongKeController.php';
 require_once './controllers/AdminTaiKhoanController.php';
 require_once './controllers/AdminTourController.php';
-require_once './controllers/AdminDatTourController.php'; // Controller Đặt Tour
+require_once './controllers/AdminDatTourController.php'; 
 require_once './controllers/AdminKhachDatTourController.php';
-
-require_once './controllers/AdminChiPhiTourController.php'; // Controller Chi Phí
+require_once './controllers/AdminChiPhiTourController.php'; 
 
 
 // Require toàn bộ file Models
 require_once './models/AdminTaiKhoan.php';
 require_once './models/AdminTour.php';
-require_once './models/AdminDatTour.php'; // Model Đặt Tour
+require_once './models/AdminDatTour.php'; 
 require_once './models/AdminKhachDatTour.php';
-
-require_once './models/AdminChiPhiTour.php'; // Model Chi Phí
+require_once './models/AdminChiPhiTour.php'; 
 
 
 // Router
 $act = $_GET['act'] ?? '/';
+// Kiểm tra đăng nhập (giữ nguyên logic của bạn)
 if ($act !== 'login-admin' && $act !== 'check-login-admin' && $act !== 'logout-admin' ) {
     checkLogin();
 }
 
-// Để bảo bảo tính chất chỉ gọi 1 hàm Controller để xử lý request thì mình sử dụng match
+// ----------------------------------------
+// KHỞI TẠO CONTROLLER (CHỈ MỘT LẦN)
+// ----------------------------------------
+$controllerThongKe = new AdminBaoCaoThongKeController();
+$controllerTaiKhoan = new AdminTaiKhoanController();
+$controllerTour = new AdminTourController();
+$controllerDatTour = new AdminDatTourController();
+$controllerKhachDatTour = new AdminKhachDatTourController();
+$controllerChiPhi = new AdminChiPhiTourController();
+
+
+// Sử dụng match để điều hướng các request
 match ($act) {
     // route báo cáo thống kê - trang chủ
-    '/' => (new AdminBaoCaoThongKeController())->home(),
-    'tour' => (new AdminTourController())->danhSachTour(),
+    '/' => $controllerThongKe->home(),
+    'tour' => $controllerTour->danhSachTour(),
 
     // --- QUẢN LÝ ĐẶT TOUR (BOOKING) ---
-    'dat-tour'    => (new AdminDatTourController())->list(),   // Xem danh sách
-    'xoa-booking' => (new AdminDatTourController())->delete(), // <--- THÊM DÒNG NÀY (Xóa Booking)
+    'dat-tour' => $controllerDatTour->list(), 
+    'xoa-booking' => $controllerDatTour->delete(), 
+    'form-sua-booking' => $controllerDatTour->formEdit(), 
+    'sua-booking' => $controllerDatTour->postEdit(), 
 
     // --- QUẢN LÝ KHÁCH ĐẶT TOUR (HÀNH KHÁCH) ---
-    'khach-dat-tour' => (new AdminKhachDatTourController())->list(),
-    'xoa-khach'      => (new AdminKhachDatTourController())->delete(),
+    'khach-dat-tour' => $controllerKhachDatTour->list(),
+    'xoa-khach' => $controllerKhachDatTour->delete(),
+    'form-sua-khach' => $controllerKhachDatTour->formEdit(), 
+    'sua-khach' => $controllerKhachDatTour->postEdit(), 
     
-    // --- QUẢN LÝ CHI PHÍ TOUR ---
-    'chi_phi_tour'      => (new AdminChiPhiTourController())->danhSachChiPhi(), 
-    'xoa-chi-phi'       => (new AdminChiPhiTourController())->delete(),         
-    'form-sua-chi-phi'  => (new AdminChiPhiTourController())->formEdit(),       
-    'sua-chi-phi'       => (new AdminChiPhiTourController())->postEdit(),       
+    // ------------------------------------
+    // --- QUẢN LÝ CHI PHÍ TOUR (C R U D)---
+    // ------------------------------------
+    // READ:
+    'chi_phi_tour' => $controllerChiPhi->danhSachChiPhi(), 
+    'detail-chi-phi' => $controllerChiPhi->detailChiPhi(), 
 
-    // Route auth  
-    'login-admin'       => (new AdminTaiKhoanController())->formLogin(),
-    'check-login-admin' => (new AdminTaiKhoanController())->login(),
-    'logout-admin'      => (new AdminTaiKhoanController())->logout(),
+    // CREATE:
+    'form-them-chi-phi' => $controllerChiPhi->formAdd(), 
+    'post-them-chi-phi' => $controllerChiPhi->postAdd(), 
+
+    // UPDATE:
+    'form-sua-chi-phi' => $controllerChiPhi->formEdit(), 
+    'sua-chi-phi' => $controllerChiPhi->postEdit(), 
+
+    // DELETE:
+    'xoa-chi-phi' => $controllerChiPhi->delete(), 
+    
+    // Route auth  
+    'login-admin' => $controllerTaiKhoan->formLogin(),
+    'check-login-admin' => $controllerTaiKhoan->login(),
+    'logout-admin' => $controllerTaiKhoan->logout(),
+
+    // Xử lý các route chưa xác định hoặc không khớp
+    default => $controllerThongKe->home(), 
 };
 ?>

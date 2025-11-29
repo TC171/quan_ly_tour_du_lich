@@ -6,7 +6,7 @@ class AdminChiPhiTour {
         $this->conn = connectDB();
     }
 
-    // 1. Lấy danh sách chi phí (để hiển thị bảng)
+    // 1. Lấy danh sách chi phí (READ)
     public function getAllChiPhi() {
         try {
             $sql = "SELECT cp.*, t.ten_tour 
@@ -19,13 +19,14 @@ class AdminChiPhiTour {
             
             return $stmt->fetchAll();
         } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
+            echo "Lỗi Model (getAllChiPhi): " . $e->getMessage();
             return [];
         }
     }
     
-    // 2. Thêm mới chi phí
-    public function insertChiPhi($tour_id, $loai_chi_phi, $so_tien, $ghi_chu, $ngay_phat_sinh) {
+    // 2. Thêm mới chi phí (CREATE)
+    // SỬA LỖI: Đổi tên hàm thành addChiPhi để khớp với Controller
+    public function addChiPhi($tour_id, $loai_chi_phi, $so_tien, $ghi_chu, $ngay_phat_sinh) {
         try {
             $sql = "INSERT INTO chiphitour (tour_id, loai_chi_phi, so_tien, ghi_chu, ngay_phat_sinh) 
                     VALUES (:tour_id, :loai_chi_phi, :so_tien, :ghi_chu, :ngay_phat_sinh)";
@@ -40,7 +41,7 @@ class AdminChiPhiTour {
             ]);
             return true;
         } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
+            echo "Lỗi Model (addChiPhi): " . $e->getMessage();
             return false;
         }
     }
@@ -53,12 +54,12 @@ class AdminChiPhiTour {
             $stmt->execute();
             return $stmt->fetchAll();
         } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
+            echo "Lỗi Model (getAllTours): " . $e->getMessage();
             return [];
         }
     }
 
-    // 4. Lấy thông tin chi tiết 1 chi phí (Để điền vào form Sửa)
+    // 4. Lấy thông tin chi tiết 1 chi phí (READ - Detail)
     public function getDetailChiPhi($id) {
         try {
             $sql = "SELECT * FROM chiphitour WHERE chiphi_id = :id";
@@ -66,11 +67,13 @@ class AdminChiPhiTour {
             $stmt->execute([':id' => $id]);
             return $stmt->fetch();
         } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
+            echo "Lỗi Model (getDetailChiPhi): " . $e->getMessage();
+            // SỬA LỖI: Trả về null để Controller biết là không tìm thấy
+            return null; 
         }
     }
 
-    // 5. Cập nhật chi phí (Chức năng Sửa)
+    // 5. Cập nhật chi phí (UPDATE)
     public function updateChiPhi($id, $tour_id, $loai_chi_phi, $so_tien, $ghi_chu, $ngay_phat_sinh) {
         try {
             $sql = "UPDATE chiphitour 
@@ -92,12 +95,12 @@ class AdminChiPhiTour {
             ]);
             return true;
         } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
+            echo "Lỗi Model (updateChiPhi): " . $e->getMessage();
             return false;
         }
     }
 
-    // 6. Xóa chi phí
+    // 6. Xóa chi phí (DELETE)
     public function deleteChiPhi($id) {
         try {
             $sql = "DELETE FROM chiphitour WHERE chiphi_id = :id";
@@ -105,7 +108,7 @@ class AdminChiPhiTour {
             $stmt->execute([':id' => $id]);
             return true;
         } catch (Exception $e) {
-            echo "Lỗi: " . $e->getMessage();
+            echo "Lỗi Model (deleteChiPhi): " . $e->getMessage();
             return false;
         }
     }

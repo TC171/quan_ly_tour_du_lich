@@ -43,21 +43,23 @@ require_once __DIR__ . '/../layout/sidebar.php';
                                             <tr>
                                                 <td><?= $key + 1 ?></td>
                                                 <td><?= $khach['ho_ten'] ?? 'N/A' ?></td>
-                                                
                                                 <td><?= $khach['nam_sinh'] ?? '' ?></td>
-                                                
                                                 <td><?= $khach['gioi_tinh'] ?></td> 
-                                                
                                                 <td><?= $khach['cmnd_passport'] ?? '' ?></td>
-
                                                 <td><?= $khach['booking_id'] ?? '' ?></td>
                                                 <td><?= $khach['ten_tour'] ?? '' ?></td>
                                                 <td>
-                                                    <a href="?act=xoa-khach&id_khach=<?= $khach['khach_id'] ?>" 
-                                                       onclick="return confirm('Bạn có chắc chắn muốn xóa khách hàng: <?= $khach['ho_ten'] ?>?')" 
-                                                       class="btn btn-danger btn-sm">
-                                                       <i class="fas fa-trash"></i> Xóa
-                                                    </a>
+                                                    <div class="btn-group">
+                                                        <a href="?act=form-sua-khach&id_khach=<?= $khach['khach_id'] ?>" class="btn btn-warning btn-sm">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+
+                                                        <a href="?act=xoa-khach&id_khach=<?= $khach['khach_id'] ?>" 
+                                                           onclick="return confirm('Xóa khách hàng này?')" 
+                                                           class="btn btn-danger btn-sm">
+                                                           <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>

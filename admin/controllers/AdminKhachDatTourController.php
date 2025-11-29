@@ -3,38 +3,54 @@ class AdminKhachDatTourController {
     public $modelKhachDatTour;
 
     public function __construct() {
-        // Khởi tạo Model
         $this->modelKhachDatTour = new AdminKhachDatTour();
     }
 
-    /**
-     * Hàm hiển thị danh sách khách
-     */
     public function list() {
-        // 1. Lấy dữ liệu từ Model
         $listKhach = $this->modelKhachDatTour->getAllKhachDatTour();
-
-        // 2. Gọi file View để hiển thị
-        // Lưu ý: Đường dẫn này tính từ file index.php gốc
-        require_once './views/khach_dat_tour/list.php';
+        require_once __DIR__ . '/../views/khach_dat_tour/list.php';
     }
 
-    /**
-     * Hàm xử lý xóa khách
-     */
     public function delete() {
-        // 1. Lấy id từ URL (ví dụ: ?act=xoa-khach&id_khach=5)
-        // Sử dụng ?? null để tránh lỗi nếu không có tham số
         $id = $_GET['id_khach'] ?? null;
-
-        // 2. Kiểm tra nếu có ID hợp lệ thì gọi Model xóa
         if ($id) {
             $this->modelKhachDatTour->deleteKhach($id);
         }
-
-        // 3. Xóa xong (hoặc không có ID) thì quay về trang danh sách
         header("Location: " . BASE_URL_ADMIN . '?act=khach-dat-tour');
         exit();
+    }
+
+    // --- MỚI: HIỂN THỊ FORM SỬA ---
+    public function formEdit() {
+        $id = $_GET['id_khach'] ?? null;
+        if ($id) {
+            $khach = $this->modelKhachDatTour->getDetailKhach($id);
+            if ($khach) {
+                require_once __DIR__ . '/../views/khach_dat_tour/edit.php';
+            } else {
+                header("Location: " . BASE_URL_ADMIN . '?act=khach-dat-tour');
+            }
+        } else {
+            header("Location: " . BASE_URL_ADMIN . '?act=khach-dat-tour');
+        }
+    }
+
+    // --- MỚI: XỬ LÝ CẬP NHẬT ---
+    public function postEdit() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $id = $_POST['khach_id'] ?? null;
+            $ho_ten = $_POST['ho_ten'] ?? '';
+            $gioi_tinh = $_POST['gioi_tinh'] ?? '';
+            $nam_sinh = $_POST['nam_sinh'] ?? '';
+            $cmnd_passport = $_POST['cmnd_passport'] ?? '';
+            $yeu_cau = $_POST['yeu_cau_dac_biet'] ?? '';
+
+            if ($id) {
+                $this->modelKhachDatTour->updateKhach($id, $ho_ten, $gioi_tinh, $nam_sinh, $cmnd_passport, $yeu_cau);
+            }
+            header("Location: " . BASE_URL_ADMIN . '?act=khach-dat-tour');
+            exit();
+        }
     }
 }
 ?>

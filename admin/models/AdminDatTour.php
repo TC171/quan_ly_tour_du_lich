@@ -6,16 +6,14 @@ class AdminDatTour {
         $this->conn = connectDB();
     }
 
+    // 1. Lấy danh sách
     public function getAllBookings() {
         try {
-            // SỬA LỖI QUAN TRỌNG:
-            // 1. Kiểm tra lại tên bảng: là 'users' hay 'nguoi_dung'?
-            // 2. Kiểm tra lại khóa chính: là 'u.id' hay 'u.user_id'?
-            
-            // Dưới đây mình thử đổi thành 'u.user_id'. 
-            // Nếu vẫn lỗi, bạn hãy mở phpMyAdmin xem cột khóa chính bảng users tên là gì rồi thay vào chỗ 'user_id' nhé.
-            
-            $sql = "SELECT b.*, t.ten_tour, u.ho_ten as ten_nguoi_dat, u.* FROM bookings as b
+            // SỬA: 
+            // - JOIN với bảng users qua u.user_id
+            // - Lấy u.dien_thoai
+            $sql = "SELECT b.*, t.ten_tour, t.gia_tour, u.ho_ten as ten_nguoi_dat, u.email, u.dien_thoai
+                    FROM bookings as b
                     INNER JOIN tours as t ON b.tour_id = t.tour_id
                     INNER JOIN users as u ON b.nguoi_dat_id = u.user_id 
                     ORDER BY b.booking_id DESC";
@@ -24,18 +22,55 @@ class AdminDatTour {
             $stmt->execute();
             return $stmt->fetchAll();
         } catch (Exception $e) {
-            echo "Lỗi SQL: " . $e->getMessage();
+            echo "Lỗi SQL Get All: " . $e->getMessage();
         }
     }
 
+    // 2. Hàm xóa
     public function deleteBooking($id) {
         try {
+            // SỬA: Dùng booking_id
             $sql = "DELETE FROM bookings WHERE booking_id = :id";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute([':id' => $id]);
             return true;
         } catch (Exception $e) {
-            echo "Lỗi SQL: " . $e->getMessage();
+            echo "Lỗi SQL Delete: " . $e->getMessage();
+        }
+    }
+
+    // 3. Lấy chi tiết 1 đơn hàng
+    public function getDetailBooking($id) {
+        try {
+            // SỬA: JOIN u.user_id và WHERE b.booking_id
+            $sql = "SELECT b.*, t.ten_tour, t.gia_tour, u.ho_ten as ten_nguoi_dat, u.email, u.dien_thoai
+                    FROM bookings as b
+                    INNER JOIN tours as t ON b.tour_id = t.tour_id
+                    INNER JOIN users as u ON b.nguoi_dat_id = u.user_id 
+                    WHERE b.booking_id = :id";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            return $stmt->fetch();
+        } catch (Exception $e) {
+            echo "Lỗi SQL Detail: " . $e->getMessage();
+        }
+    }
+
+    // 4. Cập nhật trạng thái (Hàm bị lỗi lúc nãy)
+    public function updateBooking($id, $trang_thai) {
+        try {
+            // SỬA QUAN TRỌNG: Dùng 'WHERE booking_id = :id'
+            $sql = "UPDATE bookings SET trang_thai = :trang_thai WHERE booking_id = :id";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([
+                ':trang_thai' => $trang_thai,
+                ':id' => $id
+            ]);
+            return true;
+        } catch (Exception $e) {
+            die("Lỗi SQL Update: " . $e->getMessage());
         }
     }
 }
