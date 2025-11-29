@@ -11,7 +11,7 @@ require_once './controllers/AdminTourController.php';
 require_once './controllers/AdminDatTourController.php';
 require_once './controllers/AdminKhachDatTourController.php';
 
-require_once './controllers/AdminChiPhiTourController.php'; // <--- THÊM DÒNG NÀY (Để sửa lỗi Class not found)
+require_once './controllers/AdminChiPhiTourController.php'; // Controller Chi Phí
 
 
 // Require toàn bộ file Models
@@ -20,10 +20,10 @@ require_once './models/AdminTour.php';
 require_once './models/AdminDatTour.php';
 require_once './models/AdminKhachDatTour.php';
 
-require_once './models/AdminChiPhiTour.php'; // <--- THÊM DÒNG NÀY (Để Controller dùng được Model)
+require_once './models/AdminChiPhiTour.php'; // Model Chi Phí
 
 
-//router
+// Router
 $act = $_GET['act'] ?? '/';
 if ($act !== 'login-admin' && $act !== 'check-login-admin' && $act !== 'logout-admin' ) {
     checkLogin();
@@ -38,16 +38,18 @@ match ($act) {
     // route đặt tour
     'dat-tour' => (new AdminDatTourController())->list(),
 
-    //router khách đặt tour
+    // router khách đặt tour
     'khach-dat-tour' => (new AdminKhachDatTourController())->list(),
     
-    // --- ROUTE CHI PHÍ TOUR MỚI THÊM ---
-    'chi_phi_tour' => (new AdminChiPhiTourController())->danhSachChiPhi(), 
-    // Lưu ý: Tên act 'chi_phi_tour' phải khớp với href trong sidebar.php (?act=chi_phi_tour)
+    // --- QUẢN LÝ CHI PHÍ TOUR ---
+    'chi_phi_tour'      => (new AdminChiPhiTourController())->danhSachChiPhi(), // Xem danh sách
+    'xoa-chi-phi'       => (new AdminChiPhiTourController())->delete(),         // Xóa
+    'form-sua-chi-phi'  => (new AdminChiPhiTourController())->formEdit(),       // Hiển thị form sửa
+    'sua-chi-phi'       => (new AdminChiPhiTourController())->postEdit(),       // Xử lý lưu sau khi sửa
 
-    //Route auth  
-    'login-admin' => (new AdminTaiKhoanController())-> formLogin(),
+    // Route auth  
+    'login-admin'       => (new AdminTaiKhoanController())->formLogin(),
     'check-login-admin' => (new AdminTaiKhoanController())->login(),
-    'logout-admin' => (new AdminTaiKhoanController())->logout(),
+    'logout-admin'      => (new AdminTaiKhoanController())->logout(),
 };
 ?>
