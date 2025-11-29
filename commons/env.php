@@ -12,7 +12,7 @@ define('DB_NAME', 'quan_ly_tour');
 define('DB_CHARSET', 'utf8mb4'); // thêm charset
 
 // Path config
-define('PATH_ROOT', realpath(__DIR__ . '/..'));
+define('PATH_ROOT', realpath(__DIR__ . '/..') . '/');
 define('PATH_UPLOADS', PATH_ROOT . '/uploads'); // thư mục upload files
 define('PATH_VIEWS', PATH_ROOT . '/views');     // đường dẫn views
 

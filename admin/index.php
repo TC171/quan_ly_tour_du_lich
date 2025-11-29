@@ -11,6 +11,8 @@ require_once './controllers/AdminTaiKhoanController.php';
 require_once './controllers/AdminTourController.php';
 require_once './controllers/AdminDatTourController.php';
 require_once './controllers/AdminKhachDatTourController.php';
+require_once './controllers/AdminHdvListController.php';
+
 
 
 
@@ -19,6 +21,7 @@ require_once './models/AdminTaiKhoan.php';
 require_once './models/AdminTour.php';
 require_once './models/AdminDatTour.php';
 require_once './models/AdminKhachDatTour.php';
+require_once './models/AdminHdvList.php';
 
 //router
 $act = $_GET['act'] ?? '/';
@@ -42,7 +45,13 @@ match ($act) {
     //router khách đặt tour
     'khach-dat-tour' => (new AdminKhachDatTourController())->list(),
 
-
+// --- MODULE QUẢN LÝ HƯỚNG DẪN VIÊN (HDV) ---
+    'huong_dan_vien'   => (new AdminHdvListController())->danhSach(),
+    'form-add-hdv'     => (new AdminHdvListController())->formAdd(),
+    'post-add-hdv'     => (new AdminHdvListController())->postAdd(),
+    'form-edit-hdv'    => (new AdminHdvListController())->formEdit(),
+    'post-edit-hdv'    => (new AdminHdvListController())->postEdit(),
+    'delete-hdv'       => (new AdminHdvListController())->delete(),
     
     
 
