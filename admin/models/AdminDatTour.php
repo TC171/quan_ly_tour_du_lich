@@ -1,78 +1,42 @@
 <?php
-class DatTour
-{
-    private $conn;
+class AdminDatTour {
+    public $conn;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->conn = connectDB();
     }
 
-    // Lấy tất cả đặt tour kèm thông tin hành trình và tour
-    public function getAll()
-    {
-        $sql = "SELECT dt.dat_tour_id, dt.ngay_dat, dt.tong_tien, dt.trang_thai AS dat_trang_thai,
-                       ht.hanh_trinh_id, ht.gia_mua, ht.ngay_bat_dau, ht.ngay_ket_thuc,
-                       t.tour_id, t.ten_tour, t.so_ngay, t.gia_mac_dinh
-                FROM dat_tour dt
-                JOIN hanh_trinh ht ON dt.hanh_trinh_id = ht.hanh_trinh_id
-                JOIN tour t ON ht.tour_id = t.tour_id
-                ORDER BY dt.dat_tour_id DESC";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function getAllBookings() {
+        try {
+            // SỬA LỖI QUAN TRỌNG:
+            // 1. Kiểm tra lại tên bảng: là 'users' hay 'nguoi_dung'?
+            // 2. Kiểm tra lại khóa chính: là 'u.id' hay 'u.user_id'?
+            
+            // Dưới đây mình thử đổi thành 'u.user_id'. 
+            // Nếu vẫn lỗi, bạn hãy mở phpMyAdmin xem cột khóa chính bảng users tên là gì rồi thay vào chỗ 'user_id' nhé.
+            
+            $sql = "SELECT b.*, t.ten_tour, u.ho_ten as ten_nguoi_dat, u.* FROM bookings as b
+                    INNER JOIN tours as t ON b.tour_id = t.tour_id
+                    INNER JOIN users as u ON b.nguoi_dat_id = u.user_id 
+                    ORDER BY b.booking_id DESC";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (Exception $e) {
+            echo "Lỗi SQL: " . $e->getMessage();
+        }
     }
 
-    // Lấy đặt tour theo ID
-    public function getById($id)
-    {
-        $sql = "SELECT dt.dat_tour_id, dt.ngay_dat, dt.tong_tien, dt.trang_thai AS dat_trang_thai,
-                       ht.hanh_trinh_id, ht.gia_mua, ht.ngay_bat_dau, ht.ngay_ket_thuc,
-                       t.tour_id, t.ten_tour, t.so_ngay, t.gia_mac_dinh
-                FROM dat_tour dt
-                JOIN hanh_trinh ht ON dt.hanh_trinh_id = ht.hanh_trinh_id
-                JOIN tour t ON ht.tour_id = t.tour_id
-                WHERE dt.dat_tour_id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    // Thêm đặt tour
-    public function create($data)
-    {
-        $sql = "INSERT INTO dat_tour (hanh_trinh_id, ngay_dat, trang_thai, tong_tien)
-                VALUES (?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            $data['hanh_trinh_id'],
-            $data['ngay_dat'],
-            $data['trang_thai'],
-            $data['tong_tien']
-        ]);
-    }
-
-    // Cập nhật đặt tour
-    public function update($id, $data)
-    {
-        $sql = "UPDATE dat_tour 
-                SET hanh_trinh_id = ?, ngay_dat = ?, trang_thai = ?, tong_tien = ?
-                WHERE dat_tour_id = ?";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            $data['hanh_trinh_id'],
-            $data['ngay_dat'],
-            $data['trang_thai'],
-            $data['tong_tien'],
-            $id
-        ]);
-    }
-
-    // Xóa đặt tour
-    public function delete($id)
-    {
-        $sql = "DELETE FROM dat_tour WHERE dat_tour_id = ?";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([$id]);
+    public function deleteBooking($id) {
+        try {
+            $sql = "DELETE FROM bookings WHERE booking_id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            return true;
+        } catch (Exception $e) {
+            echo "Lỗi SQL: " . $e->getMessage();
+        }
     }
 }
+?>

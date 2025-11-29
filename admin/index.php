@@ -8,7 +8,7 @@ require_once '../commons/function.php'; // Hàm hỗ trợ
 require_once './controllers/AdminBaoCaoThongKeController.php';
 require_once './controllers/AdminTaiKhoanController.php';
 require_once './controllers/AdminTourController.php';
-require_once './controllers/AdminDatTourController.php';
+require_once './controllers/AdminDatTourController.php'; // Controller Đặt Tour
 require_once './controllers/AdminKhachDatTourController.php';
 
 require_once './controllers/AdminChiPhiTourController.php'; // Controller Chi Phí
@@ -17,7 +17,7 @@ require_once './controllers/AdminChiPhiTourController.php'; // Controller Chi Ph
 // Require toàn bộ file Models
 require_once './models/AdminTaiKhoan.php';
 require_once './models/AdminTour.php';
-require_once './models/AdminDatTour.php';
+require_once './models/AdminDatTour.php'; // Model Đặt Tour
 require_once './models/AdminKhachDatTour.php';
 
 require_once './models/AdminChiPhiTour.php'; // Model Chi Phí
@@ -35,18 +35,19 @@ match ($act) {
     '/' => (new AdminBaoCaoThongKeController())->home(),
     'tour' => (new AdminTourController())->danhSachTour(),
 
-    // route đặt tour
-    'dat-tour' => (new AdminDatTourController())->list(),
+    // --- QUẢN LÝ ĐẶT TOUR (BOOKING) ---
+    'dat-tour'    => (new AdminDatTourController())->list(),   // Xem danh sách
+    'xoa-booking' => (new AdminDatTourController())->delete(), // <--- THÊM DÒNG NÀY (Xóa Booking)
 
-    // --- QUẢN LÝ KHÁCH ĐẶT TOUR ---
+    // --- QUẢN LÝ KHÁCH ĐẶT TOUR (HÀNH KHÁCH) ---
     'khach-dat-tour' => (new AdminKhachDatTourController())->list(),
-    'xoa-khach'      => (new AdminKhachDatTourController())->delete(), // <--- THÊM DÒNG NÀY
+    'xoa-khach'      => (new AdminKhachDatTourController())->delete(),
     
     // --- QUẢN LÝ CHI PHÍ TOUR ---
-    'chi_phi_tour'      => (new AdminChiPhiTourController())->danhSachChiPhi(), // Xem danh sách
-    'xoa-chi-phi'       => (new AdminChiPhiTourController())->delete(),         // Xóa
-    'form-sua-chi-phi'  => (new AdminChiPhiTourController())->formEdit(),       // Hiển thị form sửa
-    'sua-chi-phi'       => (new AdminChiPhiTourController())->postEdit(),       // Xử lý lưu sau khi sửa
+    'chi_phi_tour'      => (new AdminChiPhiTourController())->danhSachChiPhi(), 
+    'xoa-chi-phi'       => (new AdminChiPhiTourController())->delete(),         
+    'form-sua-chi-phi'  => (new AdminChiPhiTourController())->formEdit(),       
+    'sua-chi-phi'       => (new AdminChiPhiTourController())->postEdit(),       
 
     // Route auth  
     'login-admin'       => (new AdminTaiKhoanController())->formLogin(),

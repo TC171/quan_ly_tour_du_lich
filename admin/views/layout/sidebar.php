@@ -2,7 +2,7 @@
 $role = $_SESSION['user']['vai_tro'] ?? 'ADMIN';
 $userName = htmlspecialchars($_SESSION['user']['ho_ten'] ?? 'ADMIN', ENT_QUOTES, 'UTF-8');
 
-// Lấy action hiện tại để highlight menu
+// Lấy action hiện tại để highlight menu (giữ cho menu sáng khi đang chọn)
 $currentAct = $_GET['act'] ?? '';
 ?>
 
@@ -35,14 +35,13 @@ $currentAct = $_GET['act'] ?? '';
         <?php if($role === 'ADMIN'): ?>
 
           <li class="nav-header">QUẢN LÝ TOUR</li>
-
+          
           <li class="nav-item">
             <a href="<?= BASE_URL_ADMIN ?>?act=tour" class="nav-link <?= $currentAct === 'tour' ? 'active' : '' ?>">
               <i class="nav-icon fas fa-map-marked-alt"></i>
               <p>Danh sách Tour</p>
             </a>
           </li>
-
           <li class="nav-item">
             <a href="<?= BASE_URL_ADMIN ?>?act=hanh_trinh" class="nav-link <?= $currentAct === 'hanh_trinh' ? 'active' : '' ?>">
               <i class="nav-icon fas fa-route"></i>
@@ -74,14 +73,14 @@ $currentAct = $_GET['act'] ?? '';
           <li class="nav-header">QUẢN LÝ BOOKING</li>
 
           <li class="nav-item">
-            <a href="<?= BASE_URL_ADMIN ?>?act=dat_tour" class="nav-link <?= $currentAct === 'dat_tour' ? 'active' : '' ?>">
+            <a href="<?= BASE_URL_ADMIN ?>?act=dat-tour" class="nav-link <?= ($currentAct === 'dat-tour' || $currentAct === 'xoa-booking') ? 'active' : '' ?>">
               <i class="nav-icon fas fa-shopping-cart"></i>
               <p>Danh sách Đặt Tour</p>
             </a>
           </li>
 
           <li class="nav-item">
-            <a href="<?= BASE_URL_ADMIN ?>?act=khach-dat-tour" class="nav-link <?= $currentAct === 'khach-dat-tour' ? 'active' : '' ?>">
+            <a href="<?= BASE_URL_ADMIN ?>?act=khach-dat-tour" class="nav-link <?= ($currentAct === 'khach-dat-tour' || $currentAct === 'xoa-khach') ? 'active' : '' ?>">
               <i class="nav-icon fas fa-users"></i>
               <p>Khách Trong Đặt Tour</p>
             </a>
@@ -95,7 +94,6 @@ $currentAct = $_GET['act'] ?? '';
           </li>
 
           <li class="nav-header">NHÂN SỰ</li>
-
           <li class="nav-item">
             <a href="<?= BASE_URL_ADMIN ?>?act=huong_dan_vien" class="nav-link <?= $currentAct === 'huong_dan_vien' ? 'active' : '' ?>">
               <i class="nav-icon fas fa-user-tie"></i>
@@ -111,8 +109,7 @@ $currentAct = $_GET['act'] ?? '';
           </li>
 
           <li class="nav-header">NGƯỜI DÙNG</li>
-
-          <li class="nav-item">
+           <li class="nav-item">
             <a href="<?= BASE_URL_ADMIN ?>?act=nguoi_dung" class="nav-link <?= $currentAct === 'nguoi_dung' ? 'active' : '' ?>">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>Quản lý Admin / HDV</p>
