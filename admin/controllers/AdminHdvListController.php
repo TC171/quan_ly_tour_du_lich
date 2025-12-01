@@ -15,8 +15,9 @@ class AdminHdvListController {
         require_once './views/hdv/add.php';
     }
 
-    public function postAdd() {
+    public function postAdd() { 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Lấy dữ liệu từ form
             $ho_ten = $_POST['ho_ten'];
             $email = $_POST['email'];
             $password = $_POST['password'];
@@ -26,15 +27,21 @@ class AdminHdvListController {
             $ngon_ngu = $_POST['ngon_ngu'];
             $kinh_nghiem = $_POST['kinh_nghiem'];
 
+            // Xử lý ảnh
             $anh = '';
             if (isset($_FILES['anh']) && $_FILES['anh']['size'] > 0) {
-                $anh = uploadFile($_FILES['anh'], 'uploads/hdv/');
+                // Giữ nguyên dấu / ở đầu để tránh lỗi đường dẫn
+                $anh = uploadFile($_FILES['anh'], '/uploads/hdv/');
             }
 
+            // Gọi Model thêm mới
             if ($this->model->insert($ho_ten, $email, $password, $dien_thoai, $ngay_sinh, $anh, $chuyen_mon, $ngon_ngu, $kinh_nghiem)) {
+                // Thành công -> Về trang danh sách
                 header("Location: ?act=huong_dan_vien");
             } else {
-                echo "Lỗi thêm mới!";
+                // Thất bại
+                echo "<h3 style='color:red'>Lỗi thêm mới!</h3>";
+                echo "<p>Có thể Email <b>$email</b> đã tồn tại trong hệ thống. Hãy thử email khác.</p>";
             }
         }
     }
@@ -68,7 +75,7 @@ class AdminHdvListController {
             if (isset($file_anh) && $file_anh['size'] > 0) {
                 
                 // Upload ảnh mới vào thư mục uploads/hdv/
-                $uploadResult = uploadFile($file_anh, 'uploads/hdv/');
+                $uploadResult = uploadFile($file_anh, '/uploads/hdv/');
                 
                 // Nếu upload thành công thì mới gán đường dẫn mới
                 if ($uploadResult) {

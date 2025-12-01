@@ -53,7 +53,6 @@ match ($act) {
     'post-edit-hdv'    => (new AdminHdvListController())->postEdit(),
     'delete-hdv'       => (new AdminHdvListController())->delete(),
     
-    
 
     //Route auth  
     'login-admin' => (new AdminTaiKhoanController())-> formLogin(),

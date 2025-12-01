@@ -17,26 +17,27 @@ class AdminHdvList {
         return $stmt->fetchAll();
     }
 
-    // Thêm mới: Dùng Transaction để đảm bảo toàn vẹn dữ liệu
+    // Thêm mới
     public function insert($ho_ten, $email, $password, $dien_thoai, $ngay_sinh, $anh, $chuyen_mon, $ngon_ngu, $kinh_nghiem) {
         try {
-            $this->conn->beginTransaction(); // Bắt đầu giao dịch
+            $this->conn->beginTransaction();
 
-            // B1: Insert vào bảng USERS trước
-            $sqlUser = "INSERT INTO users (ho_ten, email, mat_khau, dien_thoai, vai_tro, ngay_tao, trang_thai) 
-                        VALUES (:ho_ten, :email, :mat_khau, :dien_thoai, 'HDV', NOW(), 1)";
+            // Insert Users (Lấy email làm tên đăng nhập)
+            $sqlUser = "INSERT INTO users (ten_dang_nhap, ho_ten, email, mat_khau, dien_thoai, vai_tro, ngay_tao, trang_thai) 
+                        VALUES (:ten_dang_nhap, :ho_ten, :email, :mat_khau, :dien_thoai, 'HDV', NOW(), 1)";
+            
             $stmtUser = $this->conn->prepare($sqlUser);
             $stmtUser->execute([
+                ':ten_dang_nhap' => $email,
                 ':ho_ten' => $ho_ten,
                 ':email' => $email,
-                ':mat_khau' => $password, // Thực tế nên dùng password_hash($password, PASSWORD_DEFAULT)
+                ':mat_khau' => $password,
                 ':dien_thoai' => $dien_thoai
             ]);
             
-            // Lấy ID vừa tạo
             $user_id = $this->conn->lastInsertId();
 
-            // B2: Insert vào bảng HDV dùng user_id ở trên
+            // Insert HDV
             $sqlHdv = "INSERT INTO hdv (user_id, ngay_sinh, anh, chuyen_mon, ngon_ngu, kinh_nghiem, trang_thai) 
                        VALUES (:user_id, :ngay_sinh, :anh, :chuyen_mon, :ngon_ngu, :kinh_nghiem, 1)";
             $stmtHdv = $this->conn->prepare($sqlHdv);
@@ -49,26 +50,30 @@ class AdminHdvList {
                 ':kinh_nghiem' => $kinh_nghiem
             ]);
 
-            $this->conn->commit(); // Xác nhận thành công
+            $this->conn->commit();
             return true;
         } catch (Exception $e) {
-            $this->conn->rollBack(); // Hoàn tác nếu lỗi
+            $this->conn->rollBack();
             return false;
         }
     }
 
-    // Lấy thông tin chi tiết để sửa
+    // --- ĐÂY LÀ HÀM BẠN ĐANG THIẾU ---
+    // Lấy thông tin chi tiết 1 HDV (Dùng cho chức năng Sửa và Xóa)
     public function getDetail($id) {
-        $sql = "SELECT h.*, u.ho_ten, u.email, u.dien_thoai, u.mat_khau
+        $sql = "SELECT h.*, u.ho_ten, u.email, u.dien_thoai, u.mat_khau, u.trang_thai as trang_thai_user
                 FROM hdv h 
-                JOIN users u ON h.user_id = u.user_id 
+                INNER JOIN users u ON h.user_id = u.user_id 
                 WHERE h.hdv_id = :id";
+        
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':id' => $id]);
+        
         return $stmt->fetch();
     }
+    // ---------------------------------
 
-    // Cập nhật: Update cả 2 bảng
+    // Cập nhật
     public function update($hdv_id, $user_id, $ho_ten, $dien_thoai, $ngay_sinh, $anh, $chuyen_mon, $ngon_ngu, $kinh_nghiem) {
         try {
             $this->conn->beginTransaction();
@@ -95,14 +100,16 @@ class AdminHdvList {
         }
     }
 
-    // Xóa (Tùy chọn: Xóa cứng hoặc ẩn đi)
+    // Xóa
     public function delete($hdv_id) {
-        $hdv = $this->getDetail($hdv_id);
+        // Bây giờ gọi hàm này sẽ không bị lỗi nữa
+        $hdv = $this->getDetail($hdv_id); 
+        
         if($hdv){
             try {
                 $this->conn->beginTransaction();
                 $this->conn->exec("DELETE FROM hdv WHERE hdv_id = $hdv_id");
-                $this->conn->exec("DELETE FROM users WHERE user_id = " . $hdv['user_id']); // Xóa luôn user
+                $this->conn->exec("DELETE FROM users WHERE user_id = " . $hdv['user_id']);
                 $this->conn->commit();
             } catch (Exception $e) {
                 $this->conn->rollBack();
