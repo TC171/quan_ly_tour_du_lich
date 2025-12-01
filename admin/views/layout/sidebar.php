@@ -35,6 +35,12 @@ $currentAct = $_GET['act'] ?? '';
         <?php if($role === 'ADMIN'): ?>
 
           <li class="nav-header">QUẢN LÝ TOUR</li>
+          <li class="nav-item">
+    <a href="?act=phan-bo-tour" class="nav-link">
+        <i class="nav-icon fas fa-users-cog"></i>
+        <p>Phân Công HDV</p>
+    </a>
+</li>
           
           <li class="nav-item">
             <a href="<?= BASE_URL_ADMIN ?>?act=tour" class="nav-link <?= $currentAct === 'tour' ? 'active' : '' ?>">
