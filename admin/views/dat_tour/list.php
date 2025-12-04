@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once __DIR__ . '/../layout/header.php';
 require_once __DIR__ . '/../layout/navbar.php';
 require_once __DIR__ . '/../layout/sidebar.php';
@@ -53,33 +53,49 @@ require_once __DIR__ . '/../layout/sidebar.php';
                                                 <td><?= date('d/m/Y H:i', strtotime($booking['ngay_dat'])) ?></td>
                                                 <td><?= $booking['so_nguoi'] ?></td>
                                                 <td>
-                                                    <?php 
-                                                        $gia_tour = $booking['gia_tour'] ?? 0;
-                                                        $so_nguoi = $booking['so_nguoi'] ?? 1;
-                                                        echo number_format($gia_tour * $so_nguoi, 0, ',', '.');
+                                                    <?php
+                                                    $gia_tour = $booking['gia_tour'] ?? 0;
+                                                    $so_nguoi = $booking['so_nguoi'] ?? 1;
+                                                    echo number_format($gia_tour * $so_nguoi, 0, ',', '.');
                                                     ?> VNĐ
                                                 </td>
                                                 <td>
-                                                    <?php 
-                                                        $status = $booking['trang_thai'];
-                                                        // Lưu ý: Nếu DB lưu chữ 'DA_COC' thì logic hiển thị ở đây cần sửa lại theo chuỗi đó.
-                                                        // Hiện tại code đang chạy theo logic số (0, 1, 2). 
-                                                        // Nếu cập nhật thành công mà hiển thị sai màu thì báo mình nhé.
-                                                        if ($status == 0) echo '<span class="badge badge-warning">Chờ xác nhận</span>';
-                                                        elseif ($status == 1) echo '<span class="badge badge-success">Đã xác nhận</span>';
-                                                        elseif ($status == 2) echo '<span class="badge badge-danger">Đã hủy</span>';
-                                                        else echo '<span class="badge badge-secondary">'.$status.'</span>';
+                                                    <?php
+                                                    $status = $booking['trang_thai'];
+
+                                                    switch ($status) {
+                                                        case 'CHO_XAC_NHAN':
+                                                            echo '<span class="badge badge-warning">Chờ xác nhận</span>';
+                                                            break;
+
+                                                        case 'DA_COC':
+                                                            echo '<span class="badge badge-success">Đã đặt cọc</span>';
+                                                            break;
+
+                                                        case 'HOAN_TAT':
+                                                            echo '<span class="badge badge-info">HOÀN TẤT</span>';
+                                                            break;
+
+                                                        case 'HUY':
+                                                            echo '<span class="badge badge-danger">Hủy</span>';
+                                                            break;
+
+                                                        default:
+                                                            echo '<span class="badge badge-secondary">' . $status . '</span>';
+                                                    }
+
                                                     ?>
                                                 </td>
                                                 <td>
                                                     <div class="btn-group">
-                                                        <a href="?act=form-sua-booking&id_booking=<?= $booking['booking_id'] ?>" class="btn btn-warning btn-sm">
+                                                        <a href="?act=form-sua-booking&id_booking=<?= $booking['booking_id'] ?>"
+                                                            class="btn btn-warning btn-sm">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
-                                                        <a href="?act=xoa-booking&id_booking=<?= $booking['booking_id'] ?>" 
-                                                           onclick="return confirm('Xóa đơn này?')" 
-                                                           class="btn btn-danger btn-sm">
-                                                           <i class="fas fa-trash"></i>
+                                                        <a href="?act=xoa-booking&id_booking=<?= $booking['booking_id'] ?>"
+                                                            onclick="return confirm('Xóa đơn này?')"
+                                                            class="btn btn-danger btn-sm">
+                                                            <i class="fas fa-trash"></i>
                                                         </a>
                                                     </div>
                                                 </td>

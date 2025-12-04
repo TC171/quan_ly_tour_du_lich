@@ -74,10 +74,10 @@ require_once __DIR__ . '/../layout/sidebar.php';
                                 <div class="form-group">
                                     <label class="text-primary">Trạng thái đơn hàng:</label>
                                     <select name="trang_thai" class="form-control">
-                                        <option value="0" <?= $booking['trang_thai'] == 0 ? 'selected' : '' ?>>Chờ xác nhận</option>
-                                        <option value="1" <?= $booking['trang_thai'] == 1 ? 'selected' : '' ?>>Đã xác nhận</option>
-                                        <option value="2" <?= $booking['trang_thai'] == 2 ? 'selected' : '' ?>>Đã hủy</option>
-                                        <option value="3" <?= $booking['trang_thai'] == 3 ? 'selected' : '' ?>>Hoàn thành</option>
+                                        <option value="CHO_XAC NHAN" <?= $booking['trang_thai'] == 0 ? 'selected' : '' ?>>Chờ xác nhận</option>
+                                        <option value="DA_COC" <?= $booking['trang_thai'] == 1 ? 'selected' : '' ?>>Đã đặt cọc</option>
+                                        <option value="HOAN_TAT" <?= $booking['trang_thai'] == 2 ? 'selected' : '' ?>>HOÀN TẤT</option>
+                                        <option value="HUY" <?= $booking['trang_thai'] == 3 ? 'selected' : '' ?>>Hủy</option>
                                     </select>
                                 </div>
                             </div>
