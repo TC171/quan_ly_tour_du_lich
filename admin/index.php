@@ -12,6 +12,7 @@ require_once './controllers/AdminTourController.php';
 require_once './controllers/AdminDatTourController.php';
 require_once './controllers/AdminKhachDatTourController.php';
 require_once './controllers/AdminHdvListController.php';
+require_once './controllers/AdminNhatKyController.php';
 
 
 
@@ -22,7 +23,7 @@ require_once './models/AdminTour.php';
 require_once './models/AdminDatTour.php';
 require_once './models/AdminKhachDatTour.php';
 require_once './models/AdminHdvList.php';
-
+require_once './models/AdminNhatKy.php';
 //router
 $act = $_GET['act'] ?? '/';
 if ($act !== 'login-admin' && $act !== 'check-login-admin' && $act !== 'logout-admin' ) {
@@ -52,7 +53,8 @@ match ($act) {
     'form-edit-hdv'    => (new AdminHdvListController())->formEdit(),
     'post-edit-hdv'    => (new AdminHdvListController())->postEdit(),
     'delete-hdv'       => (new AdminHdvListController())->delete(),
-    
+    // --- MODULE CHẤM CÔNG ---
+    'cham_cong_hdv' => (new AdminNhatKyController())->danhSach(),
 
     //Route auth  
     'login-admin' => (new AdminTaiKhoanController())-> formLogin(),
